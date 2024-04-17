@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/mengelbart/moqtransport"
+	moqtransport "github.com/danielpfeifer02/priority-moqtransport"
 )
 
 var (
