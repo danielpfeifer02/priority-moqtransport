@@ -5,7 +5,6 @@ go 1.21.1
 require (
 	github.com/danielpfeifer02/quic-go-prio-packs v0.41.0-25
 	github.com/mengelbart/moqtransport v0.2.0
-	github.com/quic-go/webtransport-go v0.6.1-0.20231105134933-9074577ba782
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63
 )
@@ -19,6 +18,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/quic-go/qpack v0.4.0 // indirect
 	github.com/quic-go/quic-go v0.41.0 // indirect
+	github.com/quic-go/webtransport-go v0.6.1-0.20231105134933-9074577ba782 // indirect
 	github.com/rogpeppe/go-internal v1.9.0 // indirect
 	go.uber.org/mock v0.3.0 // indirect
 	golang.org/x/crypto v0.17.0 // indirect
