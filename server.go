@@ -6,7 +6,7 @@ import (
 	"errors"
 	"log"
 
-	"github.com/quic-go/quic-go"
+	"github.com/danielpfeifer02/quic-go-prio-packs"
 )
 
 type PeerHandlerFunc func(*Peer)

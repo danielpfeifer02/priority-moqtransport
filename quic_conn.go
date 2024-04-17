@@ -3,7 +3,7 @@ package moqtransport
 import (
 	"context"
 
-	"github.com/quic-go/quic-go"
+	"github.com/danielpfeifer02/quic-go-prio-packs"
 )
 
 type quicConn struct {
@@ -35,7 +35,7 @@ func (c *quicConn) AcceptUniStream(ctx context.Context) (readStream, error) {
 }
 
 func (c *quicConn) ReceiveMessage(ctx context.Context) ([]byte, error) {
-	return c.conn.ReceiveMessage(ctx)
+	return c.conn.ReceiveDatagram(ctx)
 }
 
 func (c *quicConn) CloseWithError(e uint64, msg string) error {

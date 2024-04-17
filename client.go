@@ -5,7 +5,7 @@ import (
 	"crypto/tls"
 	"errors"
 
-	"github.com/quic-go/quic-go"
+	"github.com/danielpfeifer02/quic-go-prio-packs"
 )
 
 func DialQUIC(ctx context.Context, addr string) (*Peer, error) {
