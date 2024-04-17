@@ -43,116 +43,12 @@ func (l *quicListener) Accept(ctx context.Context) (connection, error) {
 	return qc, nil
 }
 
-// type wtListener struct {
-// 	ch chan *webtransport.Session
-// }
-
-// func (l *wtListener) Accept(ctx context.Context) (connection, error) {
-// 	select {
-// 	case <-ctx.Done():
-// 		return nil, ctx.Err()
-// 	case s := <-l.ch:
-// 		wc := &webTransportConn{
-// 			sess: s,
-// 		}
-// 		return wc, nil
-// 	}
-// }
-
-// func (s *Server) ListenWebTransport(ctx context.Context, addr string) error {
-// 	ws := &webtransport.Server{
-// 		H3: http3.Server{
-// 			Addr:      addr,
-// 			Port:      0,
-// 			TLSConfig: s.TLSConfig,
-// 			QuicConfig: &quic.Config{
-// 				GetConfigForClient:               nil,
-// 				Versions:                         nil,
-// 				HandshakeIdleTimeout:             0,
-// 				MaxIdleTimeout:                   1<<63 - 1,
-// 				RequireAddressValidation:         nil,
-// 				MaxRetryTokenAge:                 0,
-// 				MaxTokenAge:                      0,
-// 				TokenStore:                       nil,
-// 				InitialStreamReceiveWindow:       0,
-// 				MaxStreamReceiveWindow:           0,
-// 				InitialConnectionReceiveWindow:   0,
-// 				MaxConnectionReceiveWindow:       0,
-// 				AllowConnectionWindowIncrease:    nil,
-// 				MaxIncomingStreams:               0,
-// 				MaxIncomingUniStreams:            0,
-// 				KeepAlivePeriod:                  0,
-// 				DisablePathMTUDiscovery:          false,
-// 				DisableVersionNegotiationPackets: false,
-// 				Allow0RTT:                        false,
-// 				EnableDatagrams:                  false,
-// 				Tracer:                           nil,
-// 			},
-// 			Handler:            nil,
-// 			EnableDatagrams:    false,
-// 			MaxHeaderBytes:     0,
-// 			AdditionalSettings: map[uint64]uint64{},
-// 			StreamHijacker:     nil,
-// 			UniStreamHijacker:  nil,
-// 		},
-// 		StreamReorderingTimeout: 0,
-// 		CheckOrigin: func(r *http.Request) bool {
-// 			// TODO: Make configurable
-// 			return true
-// 			// return r.Header.Get("Origin") == "http://localhost:8000"
-// 		},
-// 	}
-// 	l := &wtListener{
-// 		ch: make(chan *webtransport.Session),
-// 	}
-// 	http.HandleFunc("/chat", func(w http.ResponseWriter, r *http.Request) {
-// 		log.Printf("upgrading to WebTransport")
-// 		conn, err := ws.Upgrade(w, r)
-// 		if err != nil {
-// 			log.Printf("upgrading failed: %v", err)
-// 			w.WriteHeader(http.StatusInternalServerError)
-// 			return
-// 		}
-// 		select {
-// 		case <-r.Context().Done():
-// 			return
-// 		case l.ch <- conn:
-// 		}
-// 		// Wait for end of request or session termination
-// 		select {
-// 		case <-r.Context().Done():
-// 		case <-conn.Context().Done():
-// 		}
-// 	})
-// 	// TODO: Implement graaceful server shutdown
-// 	errCh := make(chan error)
-// 	go func() {
-// 		if err := ws.ListenAndServe(); err != nil {
-// 			errCh <- err
-// 		}
-// 	}()
-// 	go func() {
-// 		if err := s.Listen(ctx, l); err != nil {
-// 			errCh <- err
-// 		}
-// 	}()
-// 	select {
-// 	case <-ctx.Done():
-// 	case err := <-errCh:
-// 		return err
-// 	}
-// 	return nil
-// }
-
 func (s *Server) ListenQUIC(ctx context.Context, addr string) error {
 	ql, err := quic.ListenAddr(addr, s.TLSConfig, &quic.Config{
-		GetConfigForClient:   nil,
-		Versions:             nil,
-		HandshakeIdleTimeout: 0,
-		MaxIdleTimeout:       1<<63 - 1,
-		// RequireAddressValidation:         nil,
-		// MaxRetryTokenAge:                 0,
-		// MaxTokenAge:                      0,
+		GetConfigForClient:             nil,
+		Versions:                       nil,
+		HandshakeIdleTimeout:           0,
+		MaxIdleTimeout:                 1<<63 - 1,
 		TokenStore:                     nil,
 		InitialStreamReceiveWindow:     0,
 		MaxStreamReceiveWindow:         0,
@@ -163,10 +59,9 @@ func (s *Server) ListenQUIC(ctx context.Context, addr string) error {
 		MaxIncomingUniStreams:          0,
 		KeepAlivePeriod:                0,
 		DisablePathMTUDiscovery:        false,
-		// DisableVersionNegotiationPackets: false,
-		Allow0RTT:       false,
-		EnableDatagrams: true,
-		Tracer:          nil,
+		Allow0RTT:                      false,
+		EnableDatagrams:                true,
+		Tracer:                         nil,
 	})
 	if err != nil {
 		return err
