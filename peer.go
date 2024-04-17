@@ -8,7 +8,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/mengelbart/moqtransport/varint"
+	"github.com/danielpfeifer02/priority-moqtransport/varint"
 	"golang.org/x/exp/slices"
 )
 

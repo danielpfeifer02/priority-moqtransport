@@ -11,7 +11,7 @@ import (
 	"log"
 	"math/big"
 
-	"github.com/mengelbart/moqtransport/examples/chat"
+	"github.com/danielpfeifer02/priority-moqtransport/examples/chat"
 )
 
 func main() {

@@ -2,7 +2,7 @@
 
 `moqtransport` is an implementation of [Media over QUIC
 Transport](https://datatracker.ietf.org/doc/draft-ietf-moq-transport/) on top of
-[quic-go](https://github.com/quic-go/quic-go) and optionally
+[quic-go](https://github.com/danielpfeifer02/quic-go-prio-packs) and optionally
 [webtransport-go](https://github.com/quic-go/webtransport-go/).
 
 ## Example: Chat Server and Client

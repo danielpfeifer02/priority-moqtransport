@@ -1,6 +1,6 @@
 package moqtransport
 
-import "github.com/mengelbart/moqtransport/varint"
+import "github.com/danielpfeifer02/priority-moqtransport/varint"
 
 type version uint64
 

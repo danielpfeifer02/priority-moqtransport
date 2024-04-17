@@ -6,7 +6,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/mengelbart/moqtransport/varint"
+	"github.com/danielpfeifer02/priority-moqtransport/varint"
 
 	"github.com/stretchr/testify/assert"
 )
