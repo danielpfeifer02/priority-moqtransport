@@ -5,8 +5,8 @@ import (
 	"crypto/tls"
 	"errors"
 
-	"github.com/quic-go/quic-go"
-	"github.com/quic-go/quic-go/http3"
+	"github.com/danielpfeifer02/quic-go-prio-packs"
+	"github.com/danielpfeifer02/quic-go-prio-packs/http3"
 	"github.com/quic-go/webtransport-go"
 )
 
