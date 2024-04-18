@@ -1,4 +1,4 @@
-module github.com/mengelbart/moqtransport
+module github.com/danielpfeifer02/priority-moqtransport
 
 go 1.21.1
 
