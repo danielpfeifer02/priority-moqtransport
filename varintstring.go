@@ -3,7 +3,7 @@ package moqtransport
 import (
 	"io"
 
-	"github.com/mengelbart/moqtransport/varint"
+	"github.com/danielpfeifer02/priority-moqtransport/varint"
 )
 
 func appendVarIntString(buf []byte, s string) []byte {
