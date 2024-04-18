@@ -104,7 +104,7 @@ func readNext(reader messageReader, r role) (message, error) {
 	}
 	length := int(l)
 
-	fmt.Println("Reading message type", messageType(mt).String(), "with length", length)
+	// fmt.Println("Reading message type", messageType(mt).String(), "with length", length)
 
 	switch messageType(mt) {
 	case objectMessageType:
@@ -181,7 +181,7 @@ func parseObjectMessage(r messageReader, length int) (*objectMessage, error) {
 		return nil, errInvalidMessageReader
 	}
 	if length < objectMessageMinimumLength {
-		fmt.Println("Length smaller than objectMessageMinimumLength")
+		// fmt.Println("Length smaller than objectMessageMinimumLength")
 		return nil, errInvalidMessageEncoding
 	}
 	offset := 0
@@ -271,7 +271,7 @@ func parseClientSetupMessage(r messageReader, length int) (*clientSetupMessage, 
 		return nil, errInvalidMessageReader
 	}
 	if length < clientSetupMessageMinimumLength {
-		fmt.Println("Length smaller than clientSetupMessageMinimumLength")
+		// fmt.Println("Length smaller than clientSetupMessageMinimumLength")
 		return nil, errInvalidMessageEncoding
 	}
 	offset := 0
@@ -327,7 +327,7 @@ func parseServerSetupMessage(r messageReader, length int) (*serverSetupMessage, 
 		return nil, errInvalidMessageReader
 	}
 	if length < serverSetupMessageMinimumLength {
-		fmt.Println("Length smaller than serverSetupMessageMinimumLength")
+		// fmt.Println("Length smaller than serverSetupMessageMinimumLength")
 		return nil, errInvalidMessageEncoding
 	}
 	sv, err := varint.Read(r)
@@ -381,7 +381,7 @@ func parseSubscribeRequestMessage(r messageReader, length int) (*subscribeReques
 		return nil, errInvalidMessageReader
 	}
 	if length < subscribeRequestMessageMinimumLength {
-		fmt.Println("Length smaller than subscribeRequestMessageMinimumLength")
+		// fmt.Println("Length smaller than subscribeRequestMessageMinimumLength")
 		return nil, errInvalidMessageEncoding
 	}
 	name, n, err := parseVarIntString(r)
@@ -437,7 +437,7 @@ func parseSubscribeOkMessage(r messageReader, length int) (*subscribeOkMessage, 
 		return nil, errInvalidMessageReader
 	}
 	if length < subscribeOkMessageMinimumLength {
-		fmt.Println("Length smaller than subscribeOkMessageMinimumLength")
+		// fmt.Println("Length smaller than subscribeOkMessageMinimumLength")
 		return nil, errInvalidMessageEncoding
 	}
 	fullTrackName, n, err := parseVarIntString(r)
@@ -453,7 +453,7 @@ func parseSubscribeOkMessage(r messageReader, length int) (*subscribeOkMessage, 
 		return nil, err
 	}
 	if n+m+k != length {
-		fmt.Println("n+m+k != length")
+		// fmt.Println("n+m+k != length")
 		return nil, errInvalidMessageEncoding
 	}
 	return &subscribeOkMessage{
@@ -502,7 +502,7 @@ func parseSubscribeErrorMessage(r messageReader, length int) (*subscribeErrorMes
 		return nil, errInvalidMessageReader
 	}
 	if length < subscribeErrorMessageMinimumLength {
-		fmt.Println("Length smaller than subscribeErrorMessageMinimumLength")
+		// fmt.Println("Length smaller than subscribeErrorMessageMinimumLength")
 		return nil, errInvalidMessageEncoding
 	}
 	fullTrackName, n, err := parseVarIntString(r)
@@ -515,7 +515,7 @@ func parseSubscribeErrorMessage(r messageReader, length int) (*subscribeErrorMes
 	}
 	reasonPhrase, k, err := parseVarIntString(r)
 	if n+m+k != length {
-		fmt.Println("n+m+k != length (2)")
+		// fmt.Println("n+m+k != length (2)")
 		return nil, errInvalidMessageEncoding
 	}
 	return &subscribeErrorMessage{
@@ -604,7 +604,7 @@ func parseAnnounceMessage(r messageReader, length int) (*announceMessage, error)
 		return nil, errInvalidMessageReader
 	}
 	if length < announceMessageMinimumLength {
-		fmt.Println("Length smaller than announceMessageMinimumLength")
+		// fmt.Println("Length smaller than announceMessageMinimumLength")
 		return nil, errInvalidMessageEncoding
 	}
 	var n int
@@ -708,7 +708,7 @@ func parseAnnounceErrorMessage(r messageReader, length int) (*announceErrorMessa
 		return nil, errInvalidMessageReader
 	}
 	if length < announceErrorMessageMinimumLength {
-		fmt.Println("Length smaller than announceErrorMessageMinimumLength")
+		// fmt.Println("Length smaller than announceErrorMessageMinimumLength")
 		return nil, errInvalidMessageEncoding
 	}
 	trackNamspace, n, err := parseVarIntString(r)
@@ -721,7 +721,7 @@ func parseAnnounceErrorMessage(r messageReader, length int) (*announceErrorMessa
 	}
 	reasonPhrase, k, err := parseVarIntString(r)
 	if n+m+k != length {
-		fmt.Println("n+m+k != length (3)")
+		// fmt.Println("n+m+k != length (3)")
 		return nil, errInvalidMessageEncoding
 	}
 	return &announceErrorMessage{
@@ -788,7 +788,7 @@ func (m *goAwayMessage) append(buf []byte) []byte {
 
 func parseGoAwayMessage(length int) (*goAwayMessage, error) {
 	if length != 0 {
-		fmt.Println("Length not equal to 0")
+		// fmt.Println("Length not equal to 0")
 		return nil, errInvalidMessageEncoding
 	}
 	return &goAwayMessage{}, nil
