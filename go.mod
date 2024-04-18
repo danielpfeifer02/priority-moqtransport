@@ -3,7 +3,7 @@ module github.com/mengelbart/moqtransport
 go 1.21.1
 
 require (
-	github.com/danielpfeifer02/quic-go-prio-packs v0.41.0-25
+	github.com/danielpfeifer02/quic-go-prio-packs v0.41.0-26
 	github.com/quic-go/webtransport-go v0.5.3
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/exp v0.0.0-20221205204356-47842c84f3db
