@@ -335,7 +335,7 @@ func (p *Peer) handleObjectMessage(msg *objectMessage) error {
 	t, ok := p.receiveTracks[msg.trackID]
 	if !ok {
 		// handle unknown track?
-		panic("TODO")
+		panic("TODO 1")
 	}
 	t.push(msg)
 	return nil
@@ -343,7 +343,7 @@ func (p *Peer) handleObjectMessage(msg *objectMessage) error {
 
 func (p *Peer) handleSubscribeRequest(msg *subscribeRequestMessage) message {
 	if p.subscribeHandler == nil {
-		panic("TODO")
+		panic("TODO 2")
 	}
 	t := newSendTrack(p.conn)
 	p.sendTracks[msg.fullTrackName] = t
@@ -366,7 +366,7 @@ func (p *Peer) handleSubscribeRequest(msg *subscribeRequestMessage) message {
 
 func (p *Peer) handleAnnounceMessage(msg *announceMessage) message {
 	if p.announcementHandler == nil {
-		panic("TODO")
+		panic("TODO 3")
 	}
 	if err := p.announcementHandler(msg.trackNamespace); err != nil {
 		return &announceErrorMessage{
@@ -410,14 +410,14 @@ func (p *Peer) Announce(namespace string) error {
 	select {
 	case resp = <-responseCh:
 	case <-time.After(time.Second): // TODO: Make timeout configurable?
-		panic("TODO: timeout error")
+		panic("TODO: timeout error 1")
 	case <-p.closeCh:
 		return errClosed
 	}
 	switch v := resp.(type) {
 	case *announceOkMessage:
 		if v.trackNamespace != am.trackNamespace {
-			panic("TODO")
+			panic("TODO 4")
 		}
 	case *announceErrorMessage:
 		return errors.New(v.reasonPhrase) // TODO: Wrap error string?
@@ -441,20 +441,20 @@ func (p *Peer) Subscribe(trackname string) (*ReceiveTrack, error) {
 	case <-p.closeCh:
 		return nil, errClosed
 	case <-time.After(time.Second):
-		panic("TODO: timeout error")
+		panic("TODO: timeout error 2")
 	}
 	var resp message
 	select {
 	case resp = <-responseCh:
 	case <-time.After(time.Second): // TODO: Make timeout configurable?
-		panic("TODO: timeout error")
+		panic("TODO: timeout error 3")
 	case <-p.closeCh:
 		return nil, errClosed
 	}
 	switch v := resp.(type) {
 	case *subscribeOkMessage:
 		if v.fullTrackName != sm.fullTrackName {
-			panic("TODO")
+			panic("TODO 5")
 		}
 		t := newReceiveTrack()
 		p.receiveTracks[v.trackID] = t
@@ -472,4 +472,8 @@ func (p *Peer) OnAnnouncement(callback AnnouncementHandler) {
 
 func (p *Peer) OnSubscription(callback SubscriptionHandler) {
 	p.subscribeHandler = callback
+}
+
+func (p *Peer) GetConnection() connection {
+	return p.conn
 }
