@@ -3,14 +3,12 @@ module github.com/danielpfeifer02/priority-moqtransport
 go 1.21.1
 
 require (
-	github.com/danielpfeifer02/quic-go-prio-packs v0.41.0-27
+	github.com/danielpfeifer02/quic-go-prio-packs v0.41.0-28
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63
 )
 
-// replace github.com/danielpfeifer02/quic-go-prio-packs v0.41.0-27 => ../../quic-go-prio-packs
-
-// replace github.com/quic-go/quic-go v0.42.0 => ../../quic-go-prio-packs
+// replace github.com/danielpfeifer02/quic-go-prio-packs v0.41.0-28 => ../../quic-go-prio-packs
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
