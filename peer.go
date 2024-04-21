@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"time"
@@ -335,7 +336,7 @@ func (p *Peer) handleObjectMessage(msg *objectMessage) error {
 	t, ok := p.receiveTracks[msg.trackID]
 	if !ok {
 		// handle unknown track?
-		panic("TODO 1")
+		panic("TODO 1 (unknown track)")
 	}
 	t.push(msg)
 	return nil
@@ -343,7 +344,11 @@ func (p *Peer) handleObjectMessage(msg *objectMessage) error {
 
 func (p *Peer) handleSubscribeRequest(msg *subscribeRequestMessage) message {
 	if p.subscribeHandler == nil {
-		panic("TODO 2")
+		// TODONOW: does that fix it? is subscription handler set by go routine?s
+		time.Sleep(10 * time.Millisecond)
+		if p.subscribeHandler == nil {
+			panic("TODO 2 (no subscribe handler)")
+		}
 	}
 	t := newSendTrack(p.conn)
 	p.sendTracks[msg.fullTrackName] = t
@@ -356,6 +361,9 @@ func (p *Peer) handleSubscribeRequest(msg *subscribeRequestMessage) message {
 			reasonPhrase:  "failed to handle subscription",
 		}
 	}
+
+	fmt.Println("Subscription id is", id)
+
 	t.id = id
 	return &subscribeOkMessage{
 		fullTrackName: msg.fullTrackName,
@@ -366,7 +374,7 @@ func (p *Peer) handleSubscribeRequest(msg *subscribeRequestMessage) message {
 
 func (p *Peer) handleAnnounceMessage(msg *announceMessage) message {
 	if p.announcementHandler == nil {
-		panic("TODO 3")
+		panic("TODO 3 (no announcement handler)")
 	}
 	if err := p.announcementHandler(msg.trackNamespace); err != nil {
 		return &announceErrorMessage{
@@ -410,14 +418,14 @@ func (p *Peer) Announce(namespace string) error {
 	select {
 	case resp = <-responseCh:
 	case <-time.After(time.Second): // TODO: Make timeout configurable?
-		panic("TODO: timeout error 1")
+		panic("TODO: timeout error 1 (no response after announce message sent)")
 	case <-p.closeCh:
 		return errClosed
 	}
 	switch v := resp.(type) {
 	case *announceOkMessage:
 		if v.trackNamespace != am.trackNamespace {
-			panic("TODO 4")
+			panic("TODO 4 (trackNamespace mismatch for announceOkMessage)")
 		}
 	case *announceErrorMessage:
 		return errors.New(v.reasonPhrase) // TODO: Wrap error string?
@@ -441,20 +449,20 @@ func (p *Peer) Subscribe(trackname string) (*ReceiveTrack, error) {
 	case <-p.closeCh:
 		return nil, errClosed
 	case <-time.After(time.Second):
-		panic("TODO: timeout error 2")
+		panic("TODO: timeout error 2 (no response when sending subscribe message)")
 	}
 	var resp message
 	select {
 	case resp = <-responseCh:
 	case <-time.After(time.Second): // TODO: Make timeout configurable?
-		panic("TODO: timeout error 3")
+		panic("TODO: timeout error 3 (no response after subscribe message sent)")
 	case <-p.closeCh:
 		return nil, errClosed
 	}
 	switch v := resp.(type) {
 	case *subscribeOkMessage:
 		if v.fullTrackName != sm.fullTrackName {
-			panic("TODO 5")
+			panic("TODO 5 (trackname mismatch for subscribeOkMessage)")
 		}
 		t := newReceiveTrack()
 		p.receiveTracks[v.trackID] = t

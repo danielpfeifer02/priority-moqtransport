@@ -19,10 +19,10 @@ func DialQUIC(ctx context.Context, addr string) (*Peer, error) {
 		HandshakeIdleTimeout:           0,
 		MaxIdleTimeout:                 1<<63 - 1,
 		TokenStore:                     nil,
-		InitialStreamReceiveWindow:     0,
-		MaxStreamReceiveWindow:         0,
-		InitialConnectionReceiveWindow: 0,
-		MaxConnectionReceiveWindow:     0,
+		InitialStreamReceiveWindow:     1 << 30, // TODONOW: what should this be?
+		MaxStreamReceiveWindow:         1 << 30, // TODONOW: what should this be?
+		InitialConnectionReceiveWindow: 1 << 30, // TODONOW: what should this be?
+		MaxConnectionReceiveWindow:     1 << 30, // TODONOW: what should this be?
 		AllowConnectionWindowIncrease:  nil,
 		MaxIncomingStreams:             0,
 		MaxIncomingUniStreams:          0,
