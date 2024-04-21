@@ -1,4 +1,6 @@
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
+github.com/danielpfeifer02/quic-go-prio-packs v0.41.0-27 h1:scbmuSGkWdr6g4yNWQsStBc5iy5hIZAY5soY+RJJzCE=
+github.com/danielpfeifer02/quic-go-prio-packs v0.41.0-27/go.mod h1:4eD0YEALiVWTevcMJc9TCsf+RE+n4PLewZ3IR9uuUjg=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
