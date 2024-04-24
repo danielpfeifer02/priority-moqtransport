@@ -70,7 +70,7 @@ func (mt messageType) String() string {
 	case unsubscribeMessageType:
 		return "UnsubscribeMessage"
 	}
-	return "unknown message type"
+	return fmt.Sprintf("unknown message type %d", mt)
 }
 
 const (
@@ -104,7 +104,7 @@ func readNext(reader messageReader, r role) (message, error) {
 	}
 	length := int(l)
 
-	// fmt.Println("Reading message type", messageType(mt).String(), "with length", length)
+	fmt.Println("Reading message type", messageType(mt).String(), "with length", length)
 
 	switch messageType(mt) {
 	case objectMessageType:
@@ -143,7 +143,7 @@ func readNext(reader messageReader, r role) (message, error) {
 	case unsubscribeMessageType:
 		return parseUnsubscribeMessage(reader, length)
 	}
-	return nil, errors.New("unknown message type")
+	return nil, fmt.Errorf("unknown message type %d", mt)
 }
 
 type objectMessage struct {

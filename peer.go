@@ -48,6 +48,9 @@ type connection interface {
 	AcceptUniStream(context.Context) (readStream, error)
 	ReceiveMessage(context.Context) ([]byte, error)
 	CloseWithError(uint64, string) error
+
+	// DATAGRAM_TAG
+	SendDatagram([]byte) error
 }
 
 type SubscriptionHandler func(string, *SendTrack) (uint64, time.Duration, error)
@@ -201,6 +204,61 @@ func (p *Peer) readMessages(r messageReader, stream io.Reader) error {
 	}
 }
 
+func (p *Peer) readMessagesDatagram(data_chan chan []byte) error {
+
+	buffer := make([]byte, 0)
+	buffer_len := 0
+	valid := false
+	var reader *bytes.Reader
+
+	for {
+
+		// if the reader read something we need to change the buffer
+		if valid {
+			fmt.Println("Updating buffer")
+			bytes_unread := reader.Len()
+			bytes_read := buffer_len - bytes_unread
+			buffer = buffer[bytes_read:]
+			buffer_len -= bytes_read
+			valid = false
+		}
+
+		new_data := <-data_chan
+
+		// for _, b := range new_data {
+		// 	fmt.Printf("%02x ", b)
+		// }
+		// fmt.Println()
+		// fmt.Println()
+
+		buffer = append(buffer, new_data...)
+		buffer_len += len(new_data)
+		fmt.Println("Buffer length is: ", len(buffer))
+
+		// for _, b := range buffer {
+		// 	fmt.Printf("%02x ", b)
+		// }
+		// fmt.Println()
+
+		reader = bytes.NewReader(buffer)
+
+		// fmt.Println("Before: ", len(buffer))
+
+		msg, err := readNext(reader, p.role)
+		if err == nil {
+			object, ok := msg.(*objectMessage)
+			if !ok {
+				return errUnexpectedMessage
+			}
+			p.handleObjectMessage(object)
+
+			valid = true
+		}
+		// fmt.Println("After: ", len(buffer))
+
+	}
+}
+
 type messageKey struct {
 	mt messageType
 	id string
@@ -317,18 +375,29 @@ func (p *Peer) acceptUnidirectionalStreams(ctx context.Context) error {
 	}
 }
 
+// DATAGRAM_TAG
 func (p *Peer) acceptDatagrams(ctx context.Context) error {
+
+	data_chan := make(chan []byte)
+
+	go func(data_chan chan []byte) {
+		for {
+			if err := p.readMessagesDatagram(data_chan); err != nil {
+				panic(err)
+			}
+		}
+	}(data_chan)
+
 	for {
 		dgram, err := p.conn.ReceiveMessage(ctx)
 		if err != nil {
 			return err
 		}
-		r := bytes.NewReader(dgram)
-		go func() {
-			if err := p.readMessages(r, nil); err != nil {
-				panic(err)
-			}
-		}()
+
+		// fmt.Println("Length of datagram: ", len(dgram))
+
+		data_chan <- dgram
+
 	}
 }
 

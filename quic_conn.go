@@ -41,3 +41,7 @@ func (c *quicConn) ReceiveMessage(ctx context.Context) ([]byte, error) {
 func (c *quicConn) CloseWithError(e uint64, msg string) error {
 	return c.conn.CloseWithError(quic.ApplicationErrorCode(e), msg)
 }
+
+func (c *quicConn) SendDatagram(b []byte) error {
+	return c.conn.SendDatagram(b)
+}

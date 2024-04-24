@@ -2,6 +2,7 @@ package moqtransport
 
 import (
 	"errors"
+	"fmt"
 )
 
 var (
@@ -32,7 +33,7 @@ func newSendTrack(conn connection) *SendTrack {
 	}
 	return &SendTrack{
 		conn:   conn,
-		mode:   singleStream,
+		mode:   datagram,
 		id:     0,
 		stream: s,
 	}
@@ -56,6 +57,7 @@ func (t *SendTrack) writeNewStream(b []byte) (int, error) {
 	return s.Write(buf)
 }
 
+// DATAGRAM_TAG
 func (t *SendTrack) Write(b []byte) (n int, err error) {
 	switch t.mode {
 	case streamPerObject:
@@ -63,6 +65,7 @@ func (t *SendTrack) Write(b []byte) (n int, err error) {
 	case streamPerGroup:
 		// ...
 	case singleStream:
+	case datagram:
 		om := &objectMessage{
 			trackID:         t.id,
 			groupSequence:   0,
@@ -72,7 +75,30 @@ func (t *SendTrack) Write(b []byte) (n int, err error) {
 		}
 		buf := make([]byte, 0, 64_000)
 		buf = om.append(buf)
-		return t.stream.Write(buf)
+
+		if t.mode == singleStream {
+			return t.stream.Write(buf)
+		}
+
+		fmt.Println("DG length:", len(buf))
+		err = t.sendDatagramSplit(buf)
+		return len(b), err
 	}
 	return 0, errInvalidSendMode
+}
+
+func (t *SendTrack) sendDatagramSplit(b []byte) error {
+	// max_dg_len := 16380 // TODO: why not working even though this is max size?
+	n := 1_200 // TODO: limit due to MTU?
+	for len(b) > 0 {
+		if len(b) < n {
+			n = len(b)
+		}
+		err := t.conn.SendDatagram(b[:n])
+		if err != nil {
+			return err
+		}
+		b = b[n:]
+	}
+	return nil
 }
