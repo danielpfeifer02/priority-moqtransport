@@ -6,22 +6,19 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/mengelbart/moqtransport/examples/chat"
+	"github.com/danielpfeifer02/priority-moqtransport/examples/chat"
 )
 
 func main() {
 	addr := flag.String("addr", "localhost:8080", "address to connect to")
-	wt := flag.Bool("webtransport", false, "Use webtransport instead of QUIC")
 	flag.Parse()
 
 	var c *chat.Client
 	var err error
 	ctx := context.Background()
-	if *wt {
-		c, err = chat.NewWebTransportClient(ctx, *addr)
-	} else {
-		c, err = chat.NewQUICClient(ctx, *addr)
-	}
+
+	c, err = chat.NewQUICClient(ctx, *addr)
+
 	if err != nil {
 		log.Fatal(err)
 	}

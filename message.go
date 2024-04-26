@@ -8,7 +8,7 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/quic-go/quic-go/quicvarint"
+	"github.com/danielpfeifer02/quic-go-prio-packs/quicvarint"
 )
 
 const (

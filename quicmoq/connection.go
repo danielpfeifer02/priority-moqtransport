@@ -3,8 +3,8 @@ package quicmoq
 import (
 	"context"
 
-	"github.com/mengelbart/moqtransport"
-	"github.com/quic-go/quic-go"
+	"github.com/danielpfeifer02/priority-moqtransport"
+	"github.com/danielpfeifer02/quic-go-prio-packs"
 )
 
 type connection struct {

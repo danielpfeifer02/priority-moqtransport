@@ -11,14 +11,13 @@ import (
 	"log"
 	"math/big"
 
-	"github.com/mengelbart/moqtransport/examples/chat"
+	"github.com/danielpfeifer02/priority-moqtransport/examples/chat"
 )
 
 func main() {
 	certFile := flag.String("cert", "localhost.pem", "TLS certificate file")
 	keyFile := flag.String("key", "localhost-key.pem", "TLS key file")
 	addr := flag.String("addr", "localhost:8080", "listen address")
-	wt := flag.Bool("webtransport", false, "Use webtransport instead of QUIC")
 	quic := flag.Bool("quic", false, "Serve QUIC only")
 	flag.Parse()
 

@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/quic-go/quic-go"
+	"github.com/danielpfeifer02/quic-go-prio-packs"
 )
 
 var errUnsubscribed = errors.New("peer unsubscribed")

@@ -4,7 +4,7 @@ import (
 	"log"
 	"sync"
 
-	"github.com/mengelbart/moqtransport"
+	"github.com/danielpfeifer02/priority-moqtransport"
 )
 
 type publisher struct {

@@ -3,19 +3,14 @@ package chat
 import (
 	"context"
 	"crypto/tls"
-	"fmt"
 	"log"
-	"net/http"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/mengelbart/moqtransport"
-	"github.com/mengelbart/moqtransport/quicmoq"
-	"github.com/mengelbart/moqtransport/webtransportmoq"
-	"github.com/quic-go/quic-go"
-	"github.com/quic-go/quic-go/http3"
-	"github.com/quic-go/webtransport-go"
+	"github.com/danielpfeifer02/priority-moqtransport"
+	"github.com/danielpfeifer02/priority-moqtransport/quicmoq"
+	"github.com/danielpfeifer02/quic-go-prio-packs"
 )
 
 type Server struct {
@@ -33,53 +28,6 @@ func NewServer() *Server {
 		lock:        sync.Mutex{},
 	}
 	return s
-}
-
-func (s *Server) Listen(ctx context.Context, addr string, tlsConfig *tls.Config) error {
-	listener, err := quic.ListenAddr(addr, tlsConfig, &quic.Config{
-		EnableDatagrams: true,
-	})
-	if err != nil {
-		return err
-	}
-	wt := webtransport.Server{
-		H3: http3.Server{
-			Addr:       addr,
-			TLSConfig:  tlsConfig,
-			QuicConfig: &quic.Config{},
-		},
-	}
-	http.HandleFunc("/moq", func(w http.ResponseWriter, r *http.Request) {
-		session, err := wt.Upgrade(w, r)
-		if err != nil {
-			log.Printf("upgrading to webtransport failed: %v", err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		moqSession, err := moqtransport.NewServerSession(webtransportmoq.New(session), false)
-		if err != nil {
-			log.Printf("MoQ Session initialization failed: %v", err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		go s.handle(moqSession)
-	})
-	for {
-		conn, err := listener.Accept(ctx)
-		if err != nil {
-			return err
-		}
-		if conn.ConnectionState().TLS.NegotiatedProtocol == "h3" {
-			go wt.ServeQUICConn(conn)
-		}
-		if conn.ConnectionState().TLS.NegotiatedProtocol == "moq-00" {
-			session, err := moqtransport.NewServerSession(quicmoq.New(conn), true)
-			if err != nil {
-				return err
-			}
-			go s.handle(session)
-		}
-	}
 }
 
 func (s *Server) ListenQUIC(ctx context.Context, addr string, tlsConfig *tls.Config) error {
@@ -100,32 +48,6 @@ func (s *Server) ListenQUIC(ctx context.Context, addr string, tlsConfig *tls.Con
 		}
 		go s.handle(session)
 	}
-}
-
-func (s *Server) ListenWebTransport(ctx context.Context, addr string, tlsConfig *tls.Config) error {
-	wt := webtransport.Server{
-		H3: http3.Server{
-			Addr:       addr,
-			TLSConfig:  tlsConfig,
-			QuicConfig: &quic.Config{},
-		},
-	}
-	http.HandleFunc("/moq", func(w http.ResponseWriter, r *http.Request) {
-		session, err := wt.Upgrade(w, r)
-		if err != nil {
-			log.Printf("upgrading to webtransport failed: %v", err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		moqSession, err := moqtransport.NewServerSession(webtransportmoq.New(session), false)
-		if err != nil {
-			log.Printf("MoQ Session initialization failed: %v", err)
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		go s.handle(moqSession)
-	})
-	return wt.ListenAndServe()
 }
 
 func (s *Server) handle(p *moqtransport.Session) {
@@ -207,15 +129,6 @@ func (s *Server) handle(p *moqtransport.Session) {
 			r.lock.Unlock()
 		}
 	}()
-}
-
-type chatMessage struct {
-	sender  string
-	content string
-}
-
-func (m *chatMessage) MarshalBinary() (data []byte, err error) {
-	return []byte(fmt.Sprintf("%v says: %v\n", m.sender, m.content)), nil
 }
 
 type subscriber struct {

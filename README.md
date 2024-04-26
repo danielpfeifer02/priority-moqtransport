@@ -1,6 +1,6 @@
 # Media over QUIC Transport
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/mengelbart/moqtransport.svg)](https://pkg.go.dev/github.com/mengelbart/moqtransport)
+[![Go Reference](https://pkg.go.dev/badge/github.com/danielpfeifer02/priority-moqtransport.svg)](https://pkg.go.dev/github.com/danielpfeifer02/priority-moqtransport)
 
 `moqtransport` is an implementation of [Media over QUIC
 Transport](https://datatracker.ietf.org/doc/draft-ietf-moq-transport/) on top of

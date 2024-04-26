@@ -14,9 +14,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mengelbart/moqtransport"
-	"github.com/mengelbart/moqtransport/quicmoq"
-	"github.com/quic-go/quic-go"
+	"github.com/danielpfeifer02/priority-moqtransport"
+	"github.com/danielpfeifer02/priority-moqtransport/quicmoq"
+	"github.com/danielpfeifer02/quic-go-prio-packs"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/goleak"
 )

@@ -1,6 +1,6 @@
 package moqtransport
 
-import "github.com/quic-go/quic-go/quicvarint"
+import "github.com/danielpfeifer02/quic-go-prio-packs/quicvarint"
 
 type LocationMode int
 

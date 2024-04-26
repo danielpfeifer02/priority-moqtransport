@@ -10,7 +10,7 @@ import (
 	"slices"
 	"sync"
 
-	"github.com/quic-go/quic-go/quicvarint"
+	"github.com/danielpfeifer02/quic-go-prio-packs/quicvarint"
 )
 
 var (
@@ -272,10 +272,12 @@ func (s *Session) acceptUnidirectionalStreams() {
 }
 
 func (s *Session) handleIncomingUniStream(stream ReceiveStream) {
+	fmt.Println("handleIncomingUniStream")
 	p := newParser(quicvarint.NewReader(stream))
 	msg, err := p.parse()
 	if err != nil {
 		s.logger.Error("failed to parse message", "error", err)
+		fmt.Println("Failed to parse message")
 		return
 	}
 	switch h := msg.(type) {
@@ -287,6 +289,7 @@ func (s *Session) handleIncomingUniStream(stream ReceiveStream) {
 			s.logger.Warn("got object for unknown subscribe ID")
 			return
 		}
+		fmt.Println("Got message with length", len(h.ObjectPayload))
 		if _, err := sub.push(h); err != nil {
 			panic(err)
 		}
