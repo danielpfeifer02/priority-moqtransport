@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/danielpfeifer02/quic-go-prio-packs"
+	"github.com/danielpfeifer02/quic-go-prio-packs/priority_setting"
 )
 
 var errUnsubscribed = errors.New("peer unsubscribed")
@@ -87,11 +88,26 @@ func (s *SendSubscription) NewObjectStream(groupID, objectID, objectSendOrder ui
 		return nil, errUnsubscribed
 	default:
 	}
-	stream, err := s.conn.OpenUniStream()
+
+	// PRIORITY_TAG
+	high_stream, err := s.conn.OpenUniStreamWithPriority(priority_setting.HighPriority)
 	if err != nil {
 		return nil, err
 	}
-	return newObjectStream(stream, s.subscribeID, s.trackAlias, groupID, objectID, objectSendOrder)
+	low_stream, err := s.conn.OpenUniStreamWithPriority(priority_setting.LowPriority)
+	if err != nil {
+		return nil, err
+	}
+	no_stream, err := s.conn.OpenUniStream()
+	if err != nil {
+		return nil, err
+	}
+	streams := streamCollection{
+		highPriorityStream: high_stream,
+		lowPriorityStream:  low_stream,
+		noPriorityStream:   no_stream,
+	}
+	return newObjectStream(streams, s.subscribeID, s.trackAlias, groupID, objectID, objectSendOrder)
 }
 
 func (s *SendSubscription) NewObjectPreferDatagram(groupID, objectID, objectSendOrder uint64, payload []byte) error {

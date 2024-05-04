@@ -289,9 +289,11 @@ func (s *Session) handleIncomingUniStream(stream ReceiveStream) {
 			s.logger.Warn("got object for unknown subscribe ID")
 			return
 		}
-		fmt.Println("Got message with length", len(h.ObjectPayload))
-		if _, err := sub.push(h); err != nil {
-			panic(err)
+		fmt.Println("Got message with length", len(h.ObjectPayload), "(within handleIncomingUniStream)")
+		if len(h.ObjectPayload) > 0 {
+			if _, err := sub.push(h); err != nil {
+				panic(err)
+			}
 		}
 	case *streamHeaderTrackMessage:
 		s.receiveSubscriptionsLock.RLock()

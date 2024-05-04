@@ -3,8 +3,9 @@ package quicmoq
 import (
 	"context"
 
-	"github.com/danielpfeifer02/priority-moqtransport"
+	moqtransport "github.com/danielpfeifer02/priority-moqtransport"
 	"github.com/danielpfeifer02/quic-go-prio-packs"
+	"github.com/danielpfeifer02/quic-go-prio-packs/priority_setting"
 )
 
 type connection struct {
@@ -19,16 +20,32 @@ func (c *connection) OpenStream() (moqtransport.Stream, error) {
 	return c.connection.OpenStream()
 }
 
+func (c *connection) OpenStreamWithPriority(p priority_setting.Priority) (moqtransport.SendStream, error) {
+	return c.connection.OpenStreamWithPriority(p)
+}
+
 func (c *connection) OpenStreamSync(ctx context.Context) (moqtransport.Stream, error) {
 	return c.connection.OpenStreamSync(ctx)
+}
+
+func (c *connection) OpenStreamSyncWithPriority(ctx context.Context, p priority_setting.Priority) (moqtransport.SendStream, error) {
+	return c.connection.OpenStreamSyncWithPriority(ctx, p)
 }
 
 func (c *connection) OpenUniStream() (moqtransport.SendStream, error) {
 	return c.connection.OpenUniStream()
 }
 
+func (c *connection) OpenUniStreamWithPriority(p priority_setting.Priority) (moqtransport.SendStream, error) {
+	return c.connection.OpenUniStreamWithPriority(p)
+}
+
 func (c *connection) OpenUniStreamSync(ctx context.Context) (moqtransport.SendStream, error) {
 	return c.connection.OpenUniStreamSync(ctx)
+}
+
+func (c *connection) OpenUniStreamSyncWithPriority(ctx context.Context, p priority_setting.Priority) (moqtransport.SendStream, error) {
+	return c.connection.OpenUniStreamSyncWithPriority(ctx, p)
 }
 
 func (c *connection) AcceptStream(ctx context.Context) (moqtransport.Stream, error) {
