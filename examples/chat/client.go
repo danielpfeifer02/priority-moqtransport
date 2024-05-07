@@ -11,7 +11,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/danielpfeifer02/priority-moqtransport"
+	moqtransport "github.com/danielpfeifer02/priority-moqtransport"
 	"github.com/danielpfeifer02/priority-moqtransport/quicmoq"
 	"github.com/danielpfeifer02/quic-go-prio-packs"
 )

@@ -1,7 +1,5 @@
 package moqtransport
 
-import "fmt"
-
 type objectStream struct {
 	streams streamCollection
 }
@@ -45,16 +43,16 @@ var drop = false
 
 func (s *objectStream) Write(payload []byte) (int, error) {
 
-	fmt.Println("LEN: ", len(payload))
+	// fmt.Println("LEN: ", len(payload))
 
 	if true {
 		// REMOVENOW
 
 		tmo := min(len(payload), 100)
-		fmt.Println("---------------------------")
+		// fmt.Println("---------------------------")
 		req := payload[0]
 		xbit := (req >> 7) & 0x01
-		nbit := (req >> 5) & 0x01
+		// nbit := (req >> 5) & 0x01
 		sbit := (req >> 4) & 0x01
 		pid := req & 0x07
 		optionals := 0
@@ -76,24 +74,24 @@ func (s *objectStream) Write(payload []byte) (int, error) {
 
 		}
 		if sbit == 1 && pid == 0 {
-			fmt.Println("x: ", xbit, " n: ", nbit, " s: ", sbit, " pid: ", pid)
+			// fmt.Println("x: ", xbit, " n: ", nbit, " s: ", sbit, " pid: ", pid)
 			hdr := payload[optionals]
-			fmt.Println("frame: ", hdr&0x01)
+			// fmt.Println("frame: ", hdr&0x01)
 
 			if (hdr & 0x01) == 1 {
 				drop = true
-				fmt.Println("DROPPING")
+				// fmt.Println("DROPPING")
 				return s.streams.lowPriorityStream.Write(payload)
 			} else {
 				drop = false
 			}
 
 			for i := 0; i < tmo; i++ {
-				fmt.Printf("%02x ", payload[i])
+				// fmt.Printf("%02x ", payload[i])
 			}
 		} else {
 			if drop {
-				fmt.Println("DROPPING")
+				// fmt.Println("DROPPING")
 				return s.streams.lowPriorityStream.Write(payload)
 			}
 		}

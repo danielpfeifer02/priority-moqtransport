@@ -272,7 +272,7 @@ func (s *Session) acceptUnidirectionalStreams() {
 }
 
 func (s *Session) handleIncomingUniStream(stream ReceiveStream) {
-	fmt.Println("handleIncomingUniStream")
+	// fmt.Println("handleIncomingUniStream")
 	p := newParser(quicvarint.NewReader(stream))
 	msg, err := p.parse()
 	if err != nil {
@@ -289,7 +289,7 @@ func (s *Session) handleIncomingUniStream(stream ReceiveStream) {
 			s.logger.Warn("got object for unknown subscribe ID")
 			return
 		}
-		fmt.Println("Got message with length", len(h.ObjectPayload), "(within handleIncomingUniStream)")
+		// fmt.Println("Got message with length", len(h.ObjectPayload), "(within handleIncomingUniStream)")
 		if len(h.ObjectPayload) > 0 {
 			if _, err := sub.push(h); err != nil {
 				panic(err)

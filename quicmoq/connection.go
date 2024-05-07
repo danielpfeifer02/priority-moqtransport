@@ -67,3 +67,8 @@ func (c *connection) ReceiveDatagram(ctx context.Context) ([]byte, error) {
 func (c *connection) CloseWithError(e uint64, msg string) error {
 	return c.connection.CloseWithError(quic.ApplicationErrorCode(e), msg)
 }
+
+// RTT_STATS_TAG
+func (c *connection) GetRTTStats() quic.RTTStatistics {
+	return c.connection.GetRTTStats()
+}
