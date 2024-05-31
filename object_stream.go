@@ -1,5 +1,9 @@
 package moqtransport
 
+import (
+	"fmt"
+)
+
 type objectStream struct {
 	streams streamCollection
 }
@@ -39,65 +43,26 @@ func newObjectStream(streams streamCollection, subscribeID, trackAlias, groupID,
 	}, nil
 }
 
-var drop = false
-
 func (s *objectStream) Write(payload []byte) (int, error) {
 
-	// fmt.Println("LEN: ", len(payload))
+	// Before the vp8 payload, there is an 8 byte timestamp
+	// saved as metadata.
+	// This is a little hacky, but it works for now.
+	vp8_offset := 8
+	hdr := payload[vp8_offset]
 
-	if true {
-		// REMOVENOW
+	size0 := (hdr >> 5) & 0x07
+	ver := (hdr >> 1) & 0x07
+	fmt.Println("size0: ", size0, " ver: ", ver, "len: ", len(payload))
 
-		tmo := min(len(payload), 100)
-		// fmt.Println("---------------------------")
-		req := payload[0]
-		xbit := (req >> 7) & 0x01
-		// nbit := (req >> 5) & 0x01
-		sbit := (req >> 4) & 0x01
-		pid := req & 0x07
-		optionals := 0
-		if xbit == 1 {
-			optionals += 1
-			value := payload[1]
-			ibit := (value >> 7) & 0x01
-			lbit := (value >> 6) & 0x01
-			tbit := (value >> 5) & 0x01
-			kbit := (value >> 4) & 0x01
-
-			if ibit == 1 {
-				value := payload[2]
-				mbit := (value >> 7) & 0x01
-				optionals += int(mbit)
-			}
-
-			optionals += (int(ibit) + int(lbit) + int(tbit|kbit))
-
-		}
-		if sbit == 1 && pid == 0 {
-			// fmt.Println("x: ", xbit, " n: ", nbit, " s: ", sbit, " pid: ", pid)
-			hdr := payload[optionals]
-			// fmt.Println("frame: ", hdr&0x01)
-
-			if (hdr & 0x01) == 1 {
-				drop = true
-				// fmt.Println("DROPPING")
-				return s.streams.lowPriorityStream.Write(payload)
-			} else {
-				drop = false
-			}
-
-			for i := 0; i < tmo; i++ {
-				// fmt.Printf("%02x ", payload[i])
-			}
-		} else {
-			if drop {
-				// fmt.Println("DROPPING")
-				return s.streams.lowPriorityStream.Write(payload)
-			}
-		}
+	if (hdr&0x01) == 1 && ((hdr>>4)&0x01) == 1 {
+		fmt.Println("LOW PRIORITY STREAM")
+		return s.streams.lowPriorityStream.Write(payload)
+	} else {
+		fmt.Println("HIGH PRIORITY STREAM")
+		return s.streams.highPriorityStream.Write(payload)
 	}
 
-	return s.streams.highPriorityStream.Write(payload)
 }
 
 func (s *objectStream) Close() error {
