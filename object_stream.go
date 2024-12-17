@@ -2,6 +2,8 @@ package moqtransport
 
 import (
 	"fmt"
+
+	"github.com/danielpfeifer02/quic-go-prio-packs/packet_setting"
 )
 
 type objectStream struct {
@@ -43,6 +45,11 @@ func newObjectStream(streams streamCollection, subscribeID, trackAlias, groupID,
 	}, nil
 }
 
+// In case one wants to showcase the issue of error propagation
+// when dropping packets, uncomment the following lines and
+// set minimum dist between I-frames to 20 and max dist to 30+.
+// var last_was_i = 0
+
 func (s *objectStream) Write(payload []byte) (int, error) {
 
 	// Before the vp8 payload, there is an 8 byte timestamp
@@ -51,15 +58,22 @@ func (s *objectStream) Write(payload []byte) (int, error) {
 	vp8_offset := 8
 	hdr := payload[vp8_offset]
 
-	size0 := (hdr >> 5) & 0x07
-	ver := (hdr >> 1) & 0x07
-	fmt.Println("size0: ", size0, " ver: ", ver, "len: ", len(payload))
+	if false {
+		size0 := (hdr >> 5) & 0x07
+		ver := (hdr >> 1) & 0x07
+		fmt.Println("size0: ", size0, " ver: ", ver, "len: ", len(payload))
+	}
 
 	if (hdr&0x01) == 1 && ((hdr>>4)&0x01) == 1 {
-		fmt.Println("LOW PRIORITY STREAM")
+		packet_setting.DebugPrintln("LOW PRIORITY STREAM")
+		// if last_was_i > 0 {
+		// 	last_was_i -= 1
+		// 	return len(payload), nil
+		// }
 		return s.streams.lowPriorityStream.Write(payload)
 	} else {
-		fmt.Println("HIGH PRIORITY STREAM")
+		packet_setting.DebugPrintln("HIGH PRIORITY STREAM")
+		// last_was_i = 20
 		return s.streams.highPriorityStream.Write(payload)
 	}
 

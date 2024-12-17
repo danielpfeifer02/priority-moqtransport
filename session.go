@@ -153,10 +153,7 @@ func NewClientSession(conn Connection, clientRole Role, enableDatagrams bool) (*
 		return nil, errUnsupportedVersion
 	}
 	l := defaultLogger.WithGroup("MOQ_CLIENT_SESSION")
-	s, err := newSession(conn, ctrlStreamHandler, enableDatagrams, l), nil
-	if err != nil {
-		return nil, err
-	}
+	s := newSession(conn, ctrlStreamHandler, enableDatagrams, l)
 	s.run()
 	return s, nil
 }
@@ -211,10 +208,7 @@ func NewServerSession(conn Connection, enableDatagrams bool) (*Session, error) {
 		return nil, fmt.Errorf("sending message on control stream failed: %w", err)
 	}
 	l := defaultLogger.WithGroup("MOQ_SERVER_SESSION")
-	s, err := newSession(conn, ctrlStreamHandler, enableDatagrams, l), nil
-	if err != nil {
-		return nil, err
-	}
+	s := newSession(conn, ctrlStreamHandler, enableDatagrams, l)
 	s.run()
 	return s, nil
 }

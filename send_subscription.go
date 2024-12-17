@@ -2,6 +2,7 @@ package moqtransport
 
 import (
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 
@@ -129,8 +130,10 @@ func (s *SendSubscription) NewObjectPreferDatagram(groupID, objectID, objectSend
 	buf = o.append(buf)
 	err := s.conn.SendDatagram(buf)
 	if err == nil {
+		fmt.Println("Sent datagram")
 		return nil
 	}
+	fmt.Println("datagram too large", len(buf))
 	if !errors.Is(err, &quic.DatagramTooLargeError{}) {
 		return err
 	}
